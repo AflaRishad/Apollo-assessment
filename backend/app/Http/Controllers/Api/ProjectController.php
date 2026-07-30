@@ -10,6 +10,7 @@ class ProjectController extends Controller
 {
     public function index(Request $request)
     {
+        
         return $request->user()->projects()->with('tasks')->latest()->get();
     }
     

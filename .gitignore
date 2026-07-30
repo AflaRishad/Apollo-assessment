@@ -1,0 +1,27 @@
+# Laravel / PHP
+/backend/vendor/
+/backend/storage/
+/backend/.env
+/backend/.phpunit.result.cache
+/backend/node_modules/
+
+# Node
+/apollo/frontend/node_modules/
+/apollo/frontend/dist/
+/apollo/frontend/*.tsbuildinfo
+
+# Environment
+.env
+
+# Python
+/.venv/
+
+# System
+.DS_Store
+Thumbs.db
+*.log
+*.cache
+
+# Editor folders
+.vscode/
+.idea/

@@ -1,11 +1,8 @@
 {
   "version": 3,
-  "projectSettings": {
-    "framework": "vite"
-  },
   "builds": [
     {
-      "src": "apollo/frontend/package.json",
+      "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
         "distDir": "apollo/frontend/dist"

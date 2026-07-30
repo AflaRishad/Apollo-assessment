@@ -4,10 +4,17 @@ A fullstack web app for managing and monitoring energy assets — projects, task
 
 ## Screenshots
 
-Login <img width="1920" height="1032" alt="Screenshot 2026-07-30 210606" src="https://github.com/user-attachments/assets/4ecdf4ce-0e56-4bd8-b4d7-a930ff1ef918" />
-Register <img width="1920" height="1032" alt="Screenshot 2026-07-30 213646" src="https://github.com/user-attachments/assets/a9fa006b-e3f1-48b1-bc31-14489e426f93" />
-Dashboard <img width="1920" height="1032" alt="Screenshot 2026-07-30 213900" src="https://github.com/user-attachments/assets/c2167d5c-9842-4dbc-b18c-ab50b8a0635d" />
-Project Detail <img width="1920" height="1032" alt="Screenshot 2026-07-30 213832" src="https://github.com/user-attachments/assets/26502c24-41bc-4552-ac67-1f762848141a" />
+**Login**
+<img width="1920" height="1032" alt="Login" src="https://github.com/user-attachments/assets/4ecdf4ce-0e56-4bd8-b4d7-a930ff1ef918" />
+
+**Register**
+<img width="1920" height="1032" alt="Register" src="https://github.com/user-attachments/assets/a9fa006b-e3f1-48b1-bc31-14489e426f93" />
+
+**Dashboard**
+<img width="1920" height="1032" alt="Dashboard" src="https://github.com/user-attachments/assets/c2167d5c-9842-4dbc-b18c-ab50b8a0635d" />
+
+**Project Detail**
+<img width="1920" height="1032" alt="Project Detail" src="https://github.com/user-attachments/assets/26502c24-41bc-4552-ac67-1f762848141a" />
 
 
 ## Features
@@ -93,3 +100,32 @@ App runs at `http://localhost:5173` (or the next available port).
 Set `VITE_API_URL` in the frontend `.env` to point at the backend (`http://localhost:8000/api`).
 
 ## Project Structure
+
+```
+backend/
+  app/Http/Controllers/Api/   # AuthController, ProjectController, TaskController
+  app/Models/                 # User, Project, Task
+  routes/api.php
+
+frontend/
+  src/App.tsx                 # Router
+  src/context/AuthContext.tsx # Auth state
+  src/api.ts                  # Bearer-token-aware fetch wrapper
+  src/pages/                  # Login, Signup, Dashboard, ProjectDetail
+  src/styles.css               # Global styles (--green accent)
+```
+
+## Known Gotchas
+
+- `ProjectController@index` must use `->with('tasks')`, not `->withCount('tasks')`, or the dashboard's task list comes back empty.
+- Frontend must call `PATCH /projects/{project}/tasks/{task}` to toggle task status — not `PUT /tasks/{id}`.
+- Access `project.tasks ?? []` on the frontend to avoid crashes when the array is undefined.
+- On Windows, close and reopen the terminal after editing `PATH` (PHP/Composer/psql) for changes to take effect.
+
+## Roadmap
+
+- Project editing & deletion (`PATCH` / `DELETE /api/projects/{project}`)
+- Task editing & deletion
+- Persist project status on creation
+- Automated API tests
+- Pagination for large project/task lists

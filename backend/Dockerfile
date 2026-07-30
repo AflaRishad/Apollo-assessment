@@ -1,6 +1,8 @@
 FROM richarvey/nginx-php-fpm:3.1.6
 COPY . .
 
+RUN composer install --no-dev --optimize-autoloader --working-dir=/var/www/html
+
 ENV SKIP_COMPOSER 1
 ENV WEBROOT /var/www/html/public
 ENV PHP_ERRORS_STDERR 1

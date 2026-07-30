@@ -1,6 +1,6 @@
 # Apollo — Energy Asset Management
 
-A fullstack web app for managing and monitoring energy assets — projects, tasks, and progress tracking — with token-based authentication.
+A fullstack web app for managing and monitoring energy assets projects, tasks, and progress tracking with token-based authentication.
 
 ## Screenshots
 

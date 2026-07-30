@@ -4,16 +4,11 @@ A fullstack web app for managing and monitoring energy assets — projects, task
 
 ## Screenshots
 
-| Login | Register | Dashboard | Project Detail |
-|---|---|---|---|
-| ![Login](<img width="1920" height="1032" alt="Screenshot 2026-07-30 210606" src="https://github.com/user-attachments/assets/4ecdf4ce-0e56-4bd8-b4d7-a930ff1ef918" />
-) | ![Register](<img width="1920" height="1032" alt="Screenshot 2026-07-30 213646" src="https://github.com/user-attachments/assets/a9fa006b-e3f1-48b1-bc31-14489e426f93" />
-) | ![Dashboard](<img width="1920" height="1032" alt="Screenshot 2026-07-30 213900" src="https://github.com/user-attachments/assets/c2167d5c-9842-4dbc-b18c-ab50b8a0635d" />
-) | ![Project Detail](<img width="1920" height="1032" alt="Screenshot 2026-07-30 213832" src="https://github.com/user-attachments/assets/26502c24-41bc-4552-ac67-1f762848141a" />
-)
-) |
+Login (<img width="1920" height="1032" alt="Screenshot 2026-07-30 210606" src="https://github.com/user-attachments/assets/4ecdf4ce-0e56-4bd8-b4d7-a930ff1ef918" />)
+Register (<img width="1920" height="1032" alt="Screenshot 2026-07-30 213646" src="https://github.com/user-attachments/assets/a9fa006b-e3f1-48b1-bc31-14489e426f93" />)
+Dashboard (<img width="1920" height="1032" alt="Screenshot 2026-07-30 213900" src="https://github.com/user-attachments/assets/c2167d5c-9842-4dbc-b18c-ab50b8a0635d" />)
+Project Detail <img width="1920" height="1032" alt="Screenshot 2026-07-30 213832" src="https://github.com/user-attachments/assets/26502c24-41bc-4552-ac67-1f762848141a" />)
 
-> Add your screenshots to a `screenshots/` folder at the project root, matching the filenames above (or update the paths here to match your own).
 
 ## Features
 

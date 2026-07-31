@@ -3,6 +3,7 @@ COPY . .
 
 RUN composer install --no-dev --optimize-autoloader --working-dir=/var/www/html
 
+ENV WEBROOT=/var/www/html/public
 ENV APP_ENV production
 ENV APP_DEBUG false
 ENV LOG_CHANNEL stderr

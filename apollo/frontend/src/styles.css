@@ -151,6 +151,23 @@ body{
 .pd-status.todo{ background:var(--red-dark-bg); color:var(--red-dark-text); }
 .pd-overdue{ color:var(--red-dark-text); }
 
+.pd-header-actions{ display:flex; align-items:center; gap:10px; flex-shrink:0; }
+.pd-header-actions select{
+  padding:9px 12px; border:1px solid var(--pd-border); border-radius:8px;
+  font-size:13px; background:var(--pd-card); color:var(--pd-text); cursor:pointer;
+}
+.pd-header-actions select:focus{ outline:none; border-color:var(--green-dark-text); }
+.pd-header-actions .btn-ghost{
+  background:var(--pd-card); border-color:var(--pd-border); color:var(--red-dark-text);
+}
+.pd-header-actions .btn-ghost:hover{ background:var(--red-dark-bg); }
+
+.pd-task-right .btn-ghost{
+  padding:5px 12px; font-size:12px; background:transparent;
+  border:1px solid var(--pd-border); color:var(--pd-text-muted);
+}
+.pd-task-right .btn-ghost:hover{ color:var(--red-dark-text); border-color:var(--red-dark-text); background:var(--red-dark-bg); }
+
 
 .modal-overlay{
   position:fixed; inset:0; background:rgba(0,0,0,0.45);

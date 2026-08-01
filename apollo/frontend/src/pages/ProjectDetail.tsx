@@ -1,10 +1,11 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 import { api } from '../api'
-import type { Project, Task, TaskStatus } from '../types'
+import type { Project, ProjectStatus, Task, TaskStatus } from '../types'
 
 export function ProjectDetail() {
   const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
   const [project, setProject] = useState<Project | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [showAddTask, setShowAddTask] = useState(false)
@@ -25,10 +26,30 @@ export function ProjectDetail() {
   }, [id])
 
   async function toggleTask(task: Task) {
+    if (!project) return
     const next: TaskStatus =
       task.status === 'done' ? 'todo' : task.status === 'todo' ? 'in-progress' : 'done'
-    await api.put(`/tasks/${task.id}`, { status: next })
+    await api.patch(`/projects/${project.id}/tasks/${task.id}`, { status: next })
     load()
+  }
+
+  async function deleteTask(taskId: number) {
+    if (!project) return
+    await api.del(`/projects/${project.id}/tasks/${taskId}`)
+    load()
+  }
+
+  async function updateStatus(status: ProjectStatus) {
+    if (!project) return
+    await api.patch(`/projects/${project.id}`, { status })
+    load()
+  }
+
+  async function deleteProject() {
+    if (!project) return
+    if (!confirm('Delete this project? This cannot be undone.')) return
+    await api.del(`/projects/${project.id}`)
+    navigate('/')
   }
 
   if (error) return <div className="pd-page"><p className="form-error">{error}</p></div>
@@ -45,6 +66,19 @@ export function ProjectDetail() {
           <div>
             <h1>{project.name}</h1>
             <p>{project.description}</p>
+          </div>
+          <div className="pd-header-actions">
+            <select
+              value={project.status}
+              onChange={(e) => updateStatus(e.target.value as ProjectStatus)}
+            >
+              <option value="planned">Planned</option>
+              <option value="active">Active</option>
+              <option value="completed">Completed</option>
+            </select>
+            <button className="btn-ghost" onClick={deleteProject}>
+              Delete Project
+            </button>
           </div>
         </div>
 
@@ -70,6 +104,15 @@ export function ProjectDetail() {
                     {task.status === 'in-progress' ? 'In progress' : 'To do'}
                   </span>
                 )}
+                <button
+                  className="btn-ghost"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    deleteTask(task.id)
+                  }}
+                >
+                  Delete
+                </button>
               </div>
             </div>
           ))}

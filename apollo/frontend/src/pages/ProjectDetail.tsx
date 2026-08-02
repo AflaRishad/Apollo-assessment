@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { api } from '../api'
-import type { Project, ProjectStatus, Task, TaskStatus } from '../types'
+import type { Project, ProjectStatus, Task, TaskStatus, TaskPriority } from '../types'
 
 export function ProjectDetail() {
   const { id } = useParams<{ id: string }>()
@@ -9,6 +9,8 @@ export function ProjectDetail() {
   const [project, setProject] = useState<Project | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [showAddTask, setShowAddTask] = useState(false)
+  const [showEditProject, setShowEditProject] = useState(false)
+  const [editingTask, setEditingTask] = useState<Task | null>(null)
 
   async function load() {
     try {
@@ -22,7 +24,7 @@ export function ProjectDetail() {
 
   useEffect(() => {
     load()
-    
+
   }, [id])
 
   async function toggleTask(task: Task) {
@@ -76,6 +78,9 @@ export function ProjectDetail() {
               <option value="active">Active</option>
               <option value="completed">Completed</option>
             </select>
+            <button className="btn-ghost" onClick={() => setShowEditProject(true)}>
+              Edit Project
+            </button>
             <button className="btn-ghost" onClick={deleteProject}>
               Delete Project
             </button>
@@ -96,6 +101,7 @@ export function ProjectDetail() {
               <div className="pd-task-left" onClick={() => toggleTask(task)} style={{ cursor: 'pointer' }}>
                 <span className={`pd-check ${task.status === 'done' ? 'done' : ''}`} />
                 <span className="pd-task-title">{task.title}</span>
+                <span className={`pd-priority pd-priority-${task.priority}`}>{task.priority}</span>
               </div>
               <div className="pd-task-right">
                 <span>{task.due_date ? `Due ${task.due_date}` : 'No due date'}</span>
@@ -104,6 +110,15 @@ export function ProjectDetail() {
                     {task.status === 'in-progress' ? 'In progress' : 'To do'}
                   </span>
                 )}
+                <button
+                  className="btn-ghost"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setEditingTask(task)
+                  }}
+                >
+                  Edit
+                </button>
                 <button
                   className="btn-ghost"
                   onClick={(e) => {
@@ -129,6 +144,29 @@ export function ProjectDetail() {
           }}
         />
       )}
+
+      {showEditProject && (
+        <EditProjectModal
+          project={project}
+          onClose={() => setShowEditProject(false)}
+          onSaved={() => {
+            setShowEditProject(false)
+            load()
+          }}
+        />
+      )}
+
+      {editingTask && (
+        <EditTaskModal
+          projectId={project.id}
+          task={editingTask}
+          onClose={() => setEditingTask(null)}
+          onSaved={() => {
+            setEditingTask(null)
+            load()
+          }}
+        />
+      )}
     </div>
   )
 }
@@ -144,6 +182,7 @@ function AddTaskModal({
 }) {
   const [title, setTitle] = useState('')
   const [dueDate, setDueDate] = useState('')
+  const [priority, setPriority] = useState<TaskPriority>('medium')
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
@@ -156,6 +195,7 @@ function AddTaskModal({
         title,
         status: 'todo',
         due_date: dueDate || null,
+        priority,
       })
       onCreated()
     } catch (err) {
@@ -178,12 +218,143 @@ function AddTaskModal({
           <label>Due date</label>
           <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
         </div>
+        <div className="field">
+          <label>Priority</label>
+          <select value={priority} onChange={(e) => setPriority(e.target.value as TaskPriority)}>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
         <div className="modal-actions">
           <button type="button" className="btn-ghost" onClick={onClose}>
             Cancel
           </button>
           <button type="submit" className="btn-solid" disabled={submitting}>
             {submitting ? 'Adding…' : 'Add Task'}
+          </button>
+        </div>
+      </form>
+    </div>
+  )
+}
+
+function EditTaskModal({
+  projectId,
+  task,
+  onClose,
+  onSaved,
+}: {
+  projectId: number
+  task: Task
+  onClose: () => void
+  onSaved: () => void
+}) {
+  const [title, setTitle] = useState(task.title)
+  const [dueDate, setDueDate] = useState(task.due_date || '')
+  const [priority, setPriority] = useState<TaskPriority>(task.priority)
+  const [error, setError] = useState<string | null>(null)
+  const [submitting, setSubmitting] = useState(false)
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault()
+    setSubmitting(true)
+    setError(null)
+    try {
+      await api.patch(`/projects/${projectId}/tasks/${task.id}`, {
+        title,
+        due_date: dueDate || null,
+        priority,
+      })
+      onSaved()
+    } catch (err) {
+      setError('Could not update task')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <form className="modal-card" onClick={(e) => e.stopPropagation()} onSubmit={handleSubmit}>
+        <h3>Edit Task</h3>
+        {error && <p className="form-error">{error}</p>}
+        <div className="field">
+          <label>Title</label>
+          <input value={title} onChange={(e) => setTitle(e.target.value)} required />
+        </div>
+        <div className="field">
+          <label>Due date</label>
+          <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
+        </div>
+        <div className="field">
+          <label>Priority</label>
+          <select value={priority} onChange={(e) => setPriority(e.target.value as TaskPriority)}>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+        <div className="modal-actions">
+          <button type="button" className="btn-ghost" onClick={onClose}>
+            Cancel
+          </button>
+          <button type="submit" className="btn-solid" disabled={submitting}>
+            {submitting ? 'Saving…' : 'Save Changes'}
+          </button>
+        </div>
+      </form>
+    </div>
+  )
+}
+
+function EditProjectModal({
+  project,
+  onClose,
+  onSaved,
+}: {
+  project: Project
+  onClose: () => void
+  onSaved: () => void
+}) {
+  const [name, setName] = useState(project.name)
+  const [description, setDescription] = useState(project.description || '')
+  const [error, setError] = useState<string | null>(null)
+  const [submitting, setSubmitting] = useState(false)
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault()
+    setSubmitting(true)
+    setError(null)
+    try {
+      await api.patch(`/projects/${project.id}`, { name, description })
+      onSaved()
+    } catch (err) {
+      setError('Could not update project')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <form className="modal-card" onClick={(e) => e.stopPropagation()} onSubmit={handleSubmit}>
+        <h3>Edit Project</h3>
+        {error && <p className="form-error">{error}</p>}
+        <div className="field">
+          <label>Name</label>
+          <input value={name} onChange={(e) => setName(e.target.value)} required />
+        </div>
+        <div className="field">
+          <label>Description</label>
+          <input value={description} onChange={(e) => setDescription(e.target.value)} />
+        </div>
+        <div className="modal-actions">
+          <button type="button" className="btn-ghost" onClick={onClose}>
+            Cancel
+          </button>
+          <button type="submit" className="btn-solid" disabled={submitting}>
+            {submitting ? 'Saving…' : 'Save Changes'}
           </button>
         </div>
       </form>

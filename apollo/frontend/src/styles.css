@@ -168,6 +168,14 @@ body{
 }
 .pd-task-right .btn-ghost:hover{ color:var(--red-dark-text); border-color:var(--red-dark-text); background:var(--red-dark-bg); }
 
+.pd-priority{
+  font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px;
+  padding:3px 8px; border-radius:20px; margin-left:8px;
+}
+.pd-priority-low{ background:var(--blue-bg); color:var(--blue-text); }
+.pd-priority-medium{ background:var(--amber-dark-bg); color:var(--amber-dark-text); }
+.pd-priority-high{ background:var(--red-dark-bg); color:var(--red-dark-text); }
+
 
 .modal-overlay{
   position:fixed; inset:0; background:rgba(0,0,0,0.45);

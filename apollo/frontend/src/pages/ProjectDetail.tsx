@@ -57,6 +57,11 @@ export function ProjectDetail() {
   if (error) return <div className="pd-page"><p className="form-error">{error}</p></div>
   if (!project) return <div className="pd-page"><p className="empty-note">Loading…</p></div>
 
+  const priorityOrder: Record<TaskPriority, number> = { high: 0, medium: 1, low: 2 }
+  const sortedTasks = [...project.tasks].sort(
+    (a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]
+  )
+
   return (
     <div className="pd-page">
       <div className="pd-card">
@@ -96,7 +101,7 @@ export function ProjectDetail() {
 
         <div className="pd-tasklist">
           {project.tasks.length === 0 && <p className="empty-note">No tasks yet.</p>}
-          {project.tasks.map((task) => (
+          {sortedTasks.map((task) => (
             <div className={`pd-task ${task.status === 'done' ? 'done' : ''}`} key={task.id}>
               <div className="pd-task-left" onClick={() => toggleTask(task)} style={{ cursor: 'pointer' }}>
                 <span className={`pd-check ${task.status === 'done' ? 'done' : ''}`} />

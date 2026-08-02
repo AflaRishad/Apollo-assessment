@@ -12,6 +12,7 @@ class TaskController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'due_date' => 'nullable|date',
+            'priority' => 'sometimes|in:low,medium,high',
         ]);
         $task = $project->tasks()->create($data);
         return response()->json($task, 201);
@@ -24,6 +25,7 @@ class TaskController extends Controller
             'title' => 'sometimes|string|max:255',
             'status' => 'sometimes|in:todo,in-progress,done',
             'due_date' => 'nullable|date',
+            'priority' => 'sometimes|in:low,medium,high',
         ]);
         $task->update($data);
         return response()->json($task);
